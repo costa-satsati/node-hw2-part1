@@ -1,27 +1,22 @@
-var http = require('http')
+var http = require('http');
 
 // in milliseconds
 const interval = process.argv[2];
-const timeToLive = process.argv[3];
+const timeToResponse = process.argv[3];
 
+if (!interval || !timeToResponse) {
+  throw new Error('Please specify both interval and timeToResponse in milliseconds!');
+}
 
+const server = http.createServer(function (request, response) {
+  response.writeHead(200,
+    { 'Content-Type': 'text/plain' });
 
+  const refreshIntervalId = setInterval(() => console.log(new Date().toUTCString()), interval);
 
-const server = http.createServer((function (request, response) {
-	response.writeHead(200,
-		{ "Content-Type": "text/plain" });
-
-	response.end("Server listening on port 3000\n");
-}));
+  setTimeout(() => {
+    clearInterval(refreshIntervalId);
+    response.end(`Current time: ${new Date().toUTCString()}`);
+  }, timeToResponse);
+});
 server.listen(3000);
-
-if (interval) {
-	const refreshIntervalId = setInterval(() => console.log(new Date().toUTCString()), interval);
-}
-
-if (timeToLive) {
-	setTimeout(() => {
-		server.close(() => console.log(`Server closed on: ${new Date().toUTCString()}`));
-		clearInterval(refreshIntervalId);
-	}, timeToLive);
-}
