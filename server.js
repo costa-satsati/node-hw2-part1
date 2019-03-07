@@ -10,13 +10,13 @@ if (!interval || !timeToResponse) {
 
 const server = http.createServer(function (request, response) {
   response.writeHead(200,
-    { 'Content-Type': 'text/plain' });
+    { 'Content-Type': 'text/html' });
 
   const refreshIntervalId = setInterval(() => console.log(new Date().toUTCString()), interval);
 
   setTimeout(() => {
     clearInterval(refreshIntervalId);
-    response.end(`Current time: ${new Date().toUTCString()}`);
+    response.end(`<html><body><h1>Current time: ${new Date().toUTCString()}</h1></body></html>`);
   }, timeToResponse);
 });
 server.listen(3000);
